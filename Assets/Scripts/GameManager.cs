@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Tilemaps;
 
 public class GameManager : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
         InitLevelTiles();
         //SceneManager.sceneLoaded += LoadTilesRemaining;
-        SceneManager.sceneLoaded += LoadLevelRequirements;
+        SceneManager.sceneLoaded += LoadLevel;
 
         DontDestroyOnLoad(gameObject);
     }
@@ -77,13 +78,40 @@ public class GameManager : MonoBehaviour
         }        
     }
 
-    private void LoadLevelRequirements(Scene scene, LoadSceneMode mode)
+    private void LoadLevel(Scene scene, LoadSceneMode mode)
     {
+        Camera cam = Camera.main;
+
         if (LevelRequirements.TryGetValue(scene.name, out LevelRequirements levelReqs))
         {
             TilesRemaining = levelReqs.TilesRemaining;
             Debug.Log("Loaded Tiles remaining count: " + TilesRemaining);
+
+            // Update Camera
+            cam.orthographicSize = levelReqs.CameraSize;
         }
+
+        var grid = GameObject.Find("Grid");
+
+        var tilemaps = grid.GetComponentsInChildren<Tilemap>();
+
+        float cameraX, cameraY;
+        foreach (var tm in tilemaps)
+        {
+            if (tm.CompareTag("Wall"))
+            {
+                var localBounds = tm.GetComponent<TilemapRenderer>().bounds;
+                cameraX = localBounds.min.x + (localBounds.max.x - localBounds.min.x) / 2;
+                cameraY = localBounds.min.y + (localBounds.max.y - localBounds.min.y) / 2;
+
+                cam.transform.position = new Vector3(cameraX, cameraY, -1f);
+            }
+        }
+
+        
+
+        // Welcome message?
+
 
         State = GameState.InPlay;
     }
