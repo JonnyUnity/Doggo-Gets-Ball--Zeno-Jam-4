@@ -17,6 +17,10 @@ public class Snake : MonoBehaviour
     private Vector2 currPos;
     private bool doMove = false;
     private bool isMoving;
+    private bool isFirstMove = true;
+
+    public bool TooSoon;
+    public bool LevelComplete;
 
     private void Awake()
     {
@@ -32,9 +36,6 @@ public class Snake : MonoBehaviour
 
     void Update()
     {
-
-        if (GameManager.Instance.State != GameState.InPlay)
-            return;
 
         if (!isMoving)
         {
@@ -66,13 +67,41 @@ public class Snake : MonoBehaviour
                 currPos = transform.position;
                 targetPos = new Vector2(transform.position.x + _direction.x, transform.position.y + _direction.y);
             }
-        }
+        
 
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            GameManager.Instance.RestartLevel();
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                GameManager.Instance.RestartLevel();
+            }
+
+            if (TooSoon)
+            {
+                GameManager.Instance.SetFailState("Too soon!");
+            }
+            if (LevelComplete)
+            {
+                GameManager.Instance.State = GameState.LevelEnding;
+            }
+
+            //// Check for level complete?
+            //if (GameManager.Instance.IsLevelComplete())
+            //{
+              
+
+            //    Debug.Log("Level Complete!");
+            //    //LevelComplete = true;
+                
+            //}
+            //else
+            //{
+            //    Debug.Log("Too Soon!");
+            //    //TooSoon = true;
+                
+            //}
+
         }
     }
+
 
     // Put physics related code here
     private void FixedUpdate()
@@ -81,82 +110,91 @@ public class Snake : MonoBehaviour
         if (doMove)
         {
             // if safe to grow!
-            Debug.Log("Growing!");
-            Debug.Log($"{this.transform.position}");
+            //Debug.Log("Moving!");
+            //currPos = transform.position;
+            StartCoroutine(MoveDog());
 
-            
-            float step = Time.deltaTime * 50;
-            //transform.position = Vector2.MoveTowards(transform.position, targetPos, step);
-            //_rigidBody.MovePosition(targetPos);
-
-            if (Vector2.Distance(transform.position, targetPos) > 0.001f)
-            {
-                //_rigidBody.velocity = new Vector2(_direction.x * step, _direction.y * step);
-                _rigidBody.velocity = new Vector2(_direction.x * speed, _direction.y * speed);
-                isMoving = true;
-            }
-            else
-            {
-                _rigidBody.velocity = Vector2.zero;
-                Grow();
-                GameManager.Instance.TilesRemaining--;
-                doMove = false;
-                isMoving = false;
-            }
-
-            //if (Vector2.Distance(transform.position, targetPos) < 0.001f)
+            //if (Vector2.Distance(transform.position, targetPos) > 0.001f)
             //{
-            //    Grow();
-            //    //this.transform.position = new Vector3(
-            //    //Mathf.Round(this.transform.position.x) + _direction.x,
-            //    //Mathf.Round(this.transform.position.y) + _direction.y,
-            //    //0f
-            //    //);
-
-
-
-            //    GameManager.Instance.TilesRemaining--;
-            //    doMove = false;
+            //    _rigidBody.velocity = new Vector2(_direction.x * speed, _direction.y * speed);
+            //    isMoving = true;
             //}
+            //else
+            //{
+            //    _rigidBody.velocity = Vector2.zero;
+            //    GameManager.Instance.TilesRemaining--;
+            //    Grow();
 
-            //_rigidBody.MovePosition(new Vector2(_direction.x, _direction.y));
-            //StartCoroutine(PerformMove());
-                     
-            
+
+            //    doMove = false;
+            //    isMoving = false;
+            //}
         }        
     }
 
-    private IEnumerator PerformMove()
+
+    private IEnumerator MoveDog()
     {
-        var origX = transform.position.x;
-        var origY = transform.position.y;
 
-        var targetX = origX + _direction.x;
-        var targetY = origY + _direction.y;
 
-        var currX = origX;
-        var currY = origY;
-
-        do
+        //targetPos = new Vector2(transform.position.x + _direction.x, transform.position.y + _direction.y);
+        if (Vector2.Distance(transform.position, targetPos) > 0.001f)
         {
-            _rigidBody.MovePosition(new Vector2(currX, currY));
-
-            currX = Mathf.Clamp(currX + Time.deltaTime, origX, targetX);
-            currY = Mathf.Clamp(currY + Time.deltaTime, origY, targetY);
-
-            yield return null;
+            _rigidBody.velocity = new Vector2(_direction.x * speed, _direction.y * speed);
+            isMoving = true;
         }
-        while (currY != origY && currX != origX);
+        else
+        {
+            _rigidBody.velocity = Vector2.zero;
+            GameManager.Instance.TilesRemaining--;
+            Grow();
 
-        _rigidBody.MovePosition(new Vector2(targetX, targetY));
 
+            doMove = false;
+            isMoving = false;
+        }
+
+        yield return null;
+
+        //while (Vector2.Distance(transform.position, targetPos) > 0.1f)
+        //{
+        //    Debug.Log("Distance = " + Vector2.Distance(transform.position, targetPos) + " : " + transform.position + " : " + targetPos);
+        //    _rigidBody.velocity = new Vector2(_direction.x * speed, _direction.y * speed);
+        //    yield return null;
+        //}
+
+
+        //_rigidBody.velocity = Vector2.zero;
+        //transform.position = targetPos;
+
+        //GameManager.Instance.TilesRemaining--;
+
+        //Grow();
+
+        //doMove = false;
+        //isMoving = false;
+        //yield return 0;
 
     }
 
+
+
     private void Grow()
     {
-        Transform segment = Instantiate(this.segmentPrefab);
+        Transform segment;
+        if (isFirstMove)
+        {
+            Debug.Log("FIRST MOVE!");
+            segment = Instantiate(this.segmentPrefab);
+            isFirstMove = false;
+        }
+        else
+        {
+            Debug.Log("ANOTHER MOVE!");
+            segment = Instantiate(this.segmentPrefab);
+        }
         segment.position = currPos;
+
         
         _segments.Add(segment);
 
@@ -164,30 +202,33 @@ public class Snake : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "Body")
+        if (other.CompareTag("Body"))
         {
-            Debug.Log("Oof! Hit my own body!");
-            GameManager.Instance.RestartLevel();
+            //Destroy(this);
+            _rigidBody.velocity = Vector2.zero;
+            GameManager.Instance.SetFailState("Oof! Hit my own body!");
         }
 
-        if (other.tag == "Wall")
+        if (other.CompareTag("Wall"))
         {
-            Debug.Log("Dang! Hit a wall!");
-            GameManager.Instance.RestartLevel();
+            //Destroy(this);
+            _rigidBody.velocity = Vector2.zero;
+            GameManager.Instance.SetFailState("Dang! Hit a wall!");
         }
 
-        if (other.tag == "Finish")
+        if (other.CompareTag("Finish"))
         {
-            Debug.Log("Collected Star!");
             if (GameManager.Instance.IsLevelComplete())
             {
-                Debug.Log("I did it! I AM EVERYWHERE!");
-                GameManager.Instance.LoadNextLevel();
+                Debug.Log("Level Complete!");
+                LevelComplete = true;
+                //GameManager.Instance.State = GameState.LevelEnding;
             }
             else
             {
-                Debug.Log("Fail!, not everywhere!");
-                GameManager.Instance.RestartLevel();
+                Debug.Log("Too Soon!");
+                TooSoon = true;
+                //GameManager.Instance.SetFailState("Too soon!");
             }
             
         }

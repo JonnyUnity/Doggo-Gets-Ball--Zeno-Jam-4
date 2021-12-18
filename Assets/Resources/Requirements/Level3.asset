@@ -14,3 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CameraSize: 4
   TilesRemaining: 15
+  StartLevelMessages:
+  - Level 3
+  - I'm having a great time
+  StartLevelWait: 3
+  EndLevelMessages:
+  - There's always another ball...
+  EndLevelWait: 3
+  FailMessage_Dead: Ouch!
+  FailMessages:
+  - Too soon!
+  FailWait: 3

@@ -14,3 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CameraSize: 3
   TilesRemaining: 2
+  StartLevelMessages:
+  - This is Level 1
+  StartLevelWait: 5
+  EndLevelMessages:
+  - Got the ball!
+  EndLevelWait: 5
