@@ -5,19 +5,22 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
+//using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public GameState State;
 
-    public Dictionary<string, int> LevelTiles;
     public Dictionary<string, LevelRequirements> LevelRequirements;
     public LevelRequirements CurrentLevel;
 
     public int TilesRemaining;
     private string FailMessage;
     private int FirstTry = 1;
+
+    private GameObject PauseMenu;
+    private GameObject MessageCanvas;
 
    // private Snake player;
 
@@ -31,20 +34,68 @@ public class GameManager : MonoBehaviour
 
         State = GameState.MainMenu;
         Instance = this;
-        InitLevelTiles();
+        InitLevelRequirements();
         //SceneManager.sceneLoaded += LoadTilesRemaining;
         SceneManager.sceneLoaded += LoadLevel;
 
         DontDestroyOnLoad(gameObject);
     }
 
-    private void InitLevelTiles()
+    public void Update()
     {
-        LevelTiles = new Dictionary<string, int>();
-        // Load required moves here...
-        LevelTiles["Level1"] = 2;
-        LevelTiles["Level2"] = 8;
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (State == GameState.InPlay)
+            {
+                PauseGame();
+            }
+            else if (State == GameState.Paused)
+            {
+                ResumeGame();
+            }
+        }
+    }
 
+    public void PauseGame()
+    {
+        State = GameState.Paused;
+        if (PauseMenu == null)
+        {
+            PauseMenu = GetPauseMenu();
+        }
+        PauseMenu.SetActive(true);
+    }
+
+    public void ResumeGame()
+    {
+        if (PauseMenu == null)
+        {
+            PauseMenu = GetPauseMenu();
+        }
+        PauseMenu.SetActive(false);
+
+        State = GameState.InPlay;
+    }
+
+    private GameObject GetPauseMenu()
+    {
+        GameObject pauseMenu = null;
+
+        var canvas = GameObject.FindGameObjectWithTag("MainCanvas");
+        if (canvas != null)
+        {
+            var trans = canvas.transform.Find("PauseMenu");
+            if (trans != null)
+            {
+                return trans.gameObject;
+            }
+        }
+
+        return pauseMenu;
+    }
+
+    private void InitLevelRequirements()
+    {
         LevelRequirements = new Dictionary<string, LevelRequirements>();
         Object[] levelReqs = Resources.LoadAll("Requirements", typeof(LevelRequirements));
         Debug.Log("Found " + levelReqs.Length + " level requirements!");
@@ -53,7 +104,6 @@ public class GameManager : MonoBehaviour
         {
             LevelRequirements[o.name] = o;
         }
-
     }
 
     public void StartGame()
@@ -75,14 +125,14 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    private void LoadTilesRemaining(Scene scene, LoadSceneMode mode)
-    {
-        if (LevelTiles.TryGetValue(scene.name, out int tilesRemaining))
-        {
-            TilesRemaining = LevelTiles[scene.name];
-            Debug.Log("Loaded Tiles remaining count: " + TilesRemaining);
-        }        
-    }
+    //private void LoadTilesRemaining(Scene scene, LoadSceneMode mode)
+    //{
+    //    if (LevelTiles.TryGetValue(scene.name, out int tilesRemaining))
+    //    {
+    //        TilesRemaining = LevelTiles[scene.name];
+    //        Debug.Log("Loaded Tiles remaining count: " + TilesRemaining);
+    //    }        
+    //}
 
     private void LoadLevel(Scene scene, LoadSceneMode mode)
     {
@@ -95,41 +145,52 @@ public class GameManager : MonoBehaviour
 
             // Update Camera
             cam.orthographicSize = CurrentLevel.CameraSize;
+
+            var grid = GameObject.Find("Grid");
+
+            //var wallsTileMap = grid.transform.Find("Walls").gameObject;
+            var wallsTileMap = GameObject.Find("Walls").gameObject;
+
+            float cameraX, cameraY;
+            var localBounds = wallsTileMap.GetComponent<TilemapRenderer>().bounds;
+            cameraX = localBounds.min.x + (localBounds.max.x - localBounds.min.x) / 2;
+            cameraY = localBounds.min.y + (localBounds.max.y - localBounds.min.y) / 2;
+
+            cam.transform.position = new Vector3(cameraX, cameraY, -1f);
+
+
+
+            //foreach (var tm in tilemaps)
+            //{
+            //    if (tm.CompareTag("Wall"))
+            //    {
+            //        var localBounds = tm.GetComponent<TilemapRenderer>().bounds;
+            //        cameraX = localBounds.min.x + (localBounds.max.x - localBounds.min.x) / 2;
+            //        cameraY = localBounds.min.y + (localBounds.max.y - localBounds.min.y) / 2;
+
+            //        cam.transform.position = new Vector3(cameraX, cameraY, -1f);
+            //    }
+            //}
+
+            GetFirstTryFlag();
+            //FirstTry = 1;
+            EnableDisablePlayer(false);
+
+
+            StartCoroutine(GameLoop());
+
         }
 
-        var grid = GameObject.Find("Grid");
-
-        var tilemaps = grid.GetComponentsInChildren<Tilemap>();
-
-        float cameraX, cameraY;
-        foreach (var tm in tilemaps)
-        {
-            if (tm.CompareTag("Wall"))
-            {
-                var localBounds = tm.GetComponent<TilemapRenderer>().bounds;
-                cameraX = localBounds.min.x + (localBounds.max.x - localBounds.min.x) / 2;
-                cameraY = localBounds.min.y + (localBounds.max.y - localBounds.min.y) / 2;
-
-                cam.transform.position = new Vector3(cameraX, cameraY, -1f);
-            }
-        }
-
-        GetFirstTryFlag();
-        //FirstTry = 1;
-        EnableDisablePlayer(false);
-        
-
-        StartCoroutine(GameLoop());
 
     }
 
     private void EnableDisablePlayer(bool enabled)
     {
-        Snake playerVar = null;
+        DogController playerVar = null;
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
-            playerVar = player.GetComponent<Snake>();
+            playerVar = player.GetComponent<DogController>();
         }
 
         if (playerVar != null)
@@ -220,7 +281,7 @@ public class GameManager : MonoBehaviour
         State = GameState.InPlay;
 
         // completing the level or dying will end this loop
-        while (State == GameState.InPlay)
+        while (State == GameState.InPlay || State == GameState.Paused)
         {
             yield return null;
         }
@@ -245,6 +306,8 @@ public class GameManager : MonoBehaviour
         // any leaving messages, scene transistion
         Debug.Log("Level Restarting");
         EnableDisablePlayer(false);
+        
+
         yield return StartCoroutine(ShowMessages(new string[] { FailMessage }, CurrentLevel.FailWait));
 
         RestartLevel();
@@ -252,37 +315,62 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator ShowMessages(string[] messages, int messagePause)
     {
-        var messageCanvas = GetMainCanvas();
-        if (messageCanvas != null)
+        if (MessageCanvas == null)
         {
-            messageCanvas.SetActive(true);  // in case it's inactive
-            var messageText = messageCanvas.GetComponentInChildren<TextMeshProUGUI>();
-
-            foreach (var msg in messages)
-            {
-                messageText.text = msg;
-                yield return new WaitForSeconds(messagePause);
-            }
-            messageText.text = "";
-
+            GetMainCanvas();
         }
+
+        MessageCanvas.SetActive(true);  // in case it's inactive
+        var messageText = MessageCanvas.GetComponentInChildren<TextMeshProUGUI>();
+        //var background = MessageCanvas.GetComponentInChildren<Image>();
+
+        foreach (var msg in messages)
+        {
+            messageText.text = msg;
+            yield return new WaitForSeconds(messagePause);
+        }
+        messageText.text = "";
+
+        //var messageCanvas = GetMainCanvas();
+        //if (messageCanvas != null)
+        //{
+        //    messageCanvas.SetActive(true);  // in case it's inactive
+        //    var messageText = messageCanvas.GetComponentInChildren<TextMeshProUGUI>();
+
+        //    foreach (var msg in messages)
+        //    {
+        //        messageText.text = msg;
+        //        yield return new WaitForSeconds(messagePause);
+        //    }
+        //    messageText.text = "";
+
+        //}
     }
 
-
-    private GameObject GetMainCanvas()
+    private void GetMainCanvas()
     {
         var canvas = GameObject.FindGameObjectWithTag("MainCanvas");
         if (canvas != null)
         {
-            var trans = canvas.transform.Find("Messages");
-            if (trans != null)
-            {
-                return trans.gameObject;
-            }
+            MessageCanvas = canvas.transform.Find("Messages").gameObject;
         }
-
-        return null;
     }
+
+
+    //private GameObject GetMainCanvas()
+    //{
+    //    var canvas = GameObject.FindGameObjectWithTag("MainCanvas");
+    //    if (canvas != null)
+    //    {
+    //        var trans = canvas.transform.Find("Messages");
+    //        if (trans != null)
+    //        {
+    //            return trans.gameObject;
+    //        }
+    //    }
+
+    //    return null;
+    //}
 
     public void SetFailState(string message)
     {
@@ -290,6 +378,28 @@ public class GameManager : MonoBehaviour
         SetFirstTryFlag();
         FailMessage = message;
         State = GameState.Dead;
+    }
+
+    public void HitWall()
+    {
+        // randomise message?
+        SetFailState(CurrentLevel.FailMessage_Dead);
+    }
+
+    public void HitOwnBody()
+    {
+        // randomise message?
+        SetFailState(CurrentLevel.FailMessage_Dead);
+    }
+
+    public void CollectedBallEarly()
+    {
+        SetFailState(CurrentLevel.FailMessage_TooSoon);
+    }
+
+    public void CompleteLevel()
+    {
+        State = GameState.LevelEnding;
     }
 
 
@@ -300,7 +410,14 @@ public enum GameState
     MainMenu,
     LevelStarting,
     InPlay,
+    Paused,
     Dead,
-    LevelEnding,
-    Paused
+    LevelEnding
+}
+
+public enum PlayerState
+{
+    Alive,
+    HitWall,
+    HitOwnBody
 }

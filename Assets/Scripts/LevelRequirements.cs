@@ -8,12 +8,13 @@ public class LevelRequirements : ScriptableObject
     public int CameraSize;
     public int TilesRemaining;
     
-    public string[] StartLevelMessages;
+    public string[] StartLevelMessages = { "There's always another ball! Woof!" };
     public int StartLevelWait = 3;
 
-    public string[] EndLevelMessages;
+    public string[] EndLevelMessages = { "Woof! I did it!" };
     public int EndLevelWait = 3;
 
+    public string FailMessage_TooSoon = "Too soon!";
     public string FailMessage_Dead = "Ouch!";
 
     public string[] FailMessages = { "Too soon!" };

@@ -15,8 +15,14 @@ MonoBehaviour:
   CameraSize: 3
   TilesRemaining: 2
   StartLevelMessages:
-  - This is Level 1
+  - Use WSAD to move
+  - Now go get that ball!
   StartLevelWait: 5
   EndLevelMessages:
   - Got the ball!
   EndLevelWait: 5
+  FailMessage_TooSoon: Too soon!
+  FailMessage_Dead: Ouch!
+  FailMessages:
+  - Too soon!
+  FailWait: 1

@@ -15,4 +15,12 @@ public class MenuUIHandler : MonoBehaviour
         GameManager.Instance.QuitGame();
     }
 
+    public void BackToStart()
+    {
+        GameManager.Instance.QuitToMenu();
+    }
+
+
+
+
 }
