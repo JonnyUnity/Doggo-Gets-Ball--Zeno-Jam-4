@@ -16,6 +16,7 @@ MonoBehaviour:
   TilesRemaining: 2
   StartLevelMessages:
   - Use WSAD to move
+  - Press R to Restart
   - Now go get that ball!
   StartLevelWait: 5
   EndLevelMessages:

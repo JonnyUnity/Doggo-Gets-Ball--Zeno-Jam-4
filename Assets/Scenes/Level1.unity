@@ -402,7 +402,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1485323503171270730, guid: 21d8a54299b14754f9b184e02250314c, type: 3}
       propertyPath: m_Name
-      value: Snake
+      value: Dog
       objectReference: {fileID: 0}
     - target: {fileID: 1485323503171270742, guid: 21d8a54299b14754f9b184e02250314c, type: 3}
       propertyPath: m_RootOrder
@@ -1169,7 +1169,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6013891712093450728, guid: 2a1465037c6bead4a85a8b48f85e594f, type: 3}
       propertyPath: m_Name
-      value: Star
+      value: Ball
       objectReference: {fileID: 0}
     - target: {fileID: 6013891712093450733, guid: 2a1465037c6bead4a85a8b48f85e594f, type: 3}
       propertyPath: m_RootOrder

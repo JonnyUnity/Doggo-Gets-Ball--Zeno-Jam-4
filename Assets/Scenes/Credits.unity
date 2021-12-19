@@ -666,7 +666,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'and with that doggo got the last ball
+  m_text: 'and with that, doggo got the last ball
 
     and was the goodest boy there
     ever was'
@@ -846,7 +846,6 @@ MonoBehaviour:
   State: 0
   CurrentLevel: {fileID: 0}
   TilesRemaining: 0
-  creditsSound: {fileID: 8300000, guid: 1f6ee0cc5b8338b458812e20b5e49ee2, type: 3}
 --- !u!4 &997421760
 Transform:
   m_ObjectHideFlags: 0

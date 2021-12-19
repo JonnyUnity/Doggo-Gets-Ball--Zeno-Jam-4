@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Data", menuName = "Level Reqs", order = 1)]
 public class LevelRequirements : ScriptableObject
 {
-    public int CameraSize;
+    public int CameraSize = 4;
     public int TilesRemaining;
     
     public string[] StartLevelMessages = { "There's always another ball! Woof!" };
