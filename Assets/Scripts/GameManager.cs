@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     private GameObject MessageCanvas;
 
     private AudioSource AudioSource;
+    private LevelLoader LevelLoader;
 
     private void Awake()
     {
@@ -42,6 +43,14 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneLoaded += LoadLevel;
 
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void GetLevelLoader()
+    {
+        if (LevelLoader == null)
+        {
+            LevelLoader = GameObject.FindObjectOfType<LevelLoader>();
+        }
     }
 
     public void Update()
@@ -123,7 +132,8 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        SceneManager.LoadScene(1);
+        GetLevelLoader();
+        LevelLoader.LoadLevel(1);
     }
 
 
@@ -140,7 +150,8 @@ public class GameManager : MonoBehaviour
 
     public void QuitToMenu()
     {
-        SceneManager.LoadScene(0);
+        GetLevelLoader();
+        LevelLoader.LoadLevel(0);
     }
 
 
@@ -193,7 +204,6 @@ public class GameManager : MonoBehaviour
 
         if (playerVar != null)
         {
-            Debug.Log(" Player = " + enabled);
             playerVar.enabled = enabled;
         }
 
@@ -213,7 +223,8 @@ public class GameManager : MonoBehaviour
 
     public void RestartLevel()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        GetLevelLoader();
+        LevelLoader.RestartLevel();
     }
 
 
@@ -228,10 +239,11 @@ public class GameManager : MonoBehaviour
     {
         FirstTry = 1;
         SetFirstTryFlag();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-    }
 
-    
+        GetLevelLoader();
+        LevelLoader.LoadNextLevel();
+    }
+        
 
     private IEnumerator GameLoop()
     {
@@ -259,18 +271,11 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator LevelStarting()
     {
-        // opening scene transisiton?
-        // display start level messages...
-        Debug.Log("Level Starting");
-
-
         yield return StartCoroutine(ShowMessages(CurrentLevel.StartLevelMessages, CurrentLevel.StartLevelWait));
-
     }
 
     private IEnumerator LevelPlaying()
     {
-        Debug.Log("Level Playing");
         EnableDisablePlayer(true);
         State = GameState.InPlay;
 
@@ -279,14 +284,11 @@ public class GameManager : MonoBehaviour
         {
             yield return null;
         }
-        
-
     }
 
     private IEnumerator LevelEnding()
     {
         // any leaving messages, scene transistion
-        Debug.Log("Level Ending");
         EnableDisablePlayer(false);
 
         yield return StartCoroutine(ShowMessages(CurrentLevel.EndLevelMessages, CurrentLevel.EndLevelWait));
@@ -297,10 +299,8 @@ public class GameManager : MonoBehaviour
     private IEnumerator LevelRestarting()
     {
         // any leaving messages, scene transistion
-        Debug.Log("Level Restarting");
         EnableDisablePlayer(false);
         
-
         yield return StartCoroutine(ShowMessages(new string[] { FailMessage }, CurrentLevel.FailWait));
 
         RestartLevel();

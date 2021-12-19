@@ -133,59 +133,18 @@ public class DogController : MonoBehaviour
     }
 
 
-    // Put physics related code here
     private void FixedUpdate()
     {
 
         if (doMove)
         {
-            // if safe to grow!
-            //Debug.Log("Moving!");
-            //currPos = transform.position;
-            
             StartCoroutine(MoveDog());
-
-            //if (Vector2.Distance(transform.position, targetPos) > 0.001f)
-            //{
-            //    _rigidBody.velocity = new Vector2(_direction.x * speed, _direction.y * speed);
-            //    isMoving = true;
-            //}
-            //else
-            //{
-            //    _rigidBody.velocity = Vector2.zero;
-            //    GameManager.Instance.TilesRemaining--;
-            //    Grow();
-
-
-            //    doMove = false;
-            //    isMoving = false;
-            //}
         }        
     }
 
 
     private IEnumerator MoveDog()
     {
-
-        //if (!isFirstMove)
-        //{
-        //    Dog_Neck.SetActive(true);
-        //    if (_previousDirection == Vector2.right)
-        //    {
-        //        Dog_Neck.transform.Rotate(0, 0, 90);
-        //    }
-        //    else if (_previousDirection == Vector2.up)
-        //    {
-        //        Dog_Neck.transform.Rotate(0, 0, 180);
-        //    }
-        //    else if (_previousDirection == Vector2.left)
-        //    {
-        //        Dog_Neck.transform.Rotate(0, 0, 270);
-        //    }
-        //}
-
-        
-
         if (Vector2.Distance(transform.position, targetPos) > 0.001f)
         {
             _rigidBody.velocity = new Vector2(_direction.x * speed, _direction.y * speed);
@@ -206,26 +165,6 @@ public class DogController : MonoBehaviour
         }
 
         yield return null;
-
-        //while (Vector2.Distance(transform.position, targetPos) > 0.1f)
-        //{
-        //    Debug.Log("Distance = " + Vector2.Distance(transform.position, targetPos) + " : " + transform.position + " : " + targetPos);
-        //    _rigidBody.velocity = new Vector2(_direction.x * speed, _direction.y * speed);
-        //    yield return null;
-        //}
-
-
-        //_rigidBody.velocity = Vector2.zero;
-        //transform.position = targetPos;
-
-        //GameManager.Instance.TilesRemaining--;
-
-        //Grow();
-
-        //doMove = false;
-        //isMoving = false;
-        //yield return 0;
-
     }
 
     private void PlayFootstepSound()
@@ -236,13 +175,11 @@ public class DogController : MonoBehaviour
     }
 
 
-
     private void Grow()
     {
         Transform segment;
         if (isFirstMove)
         {
-            Debug.Log("FIRST MOVE!");
             segment = Instantiate(this.backLegsPrefab);
             var backLegsSpriteRenderer = segment.transform.GetComponent<SpriteRenderer>();
 
@@ -268,7 +205,6 @@ public class DogController : MonoBehaviour
         }
         else
         {
-            Debug.Log("ANOTHER MOVE!");
             if (_direction != _previousDirection)
             {
                 segment = Instantiate(this.cornerPrefab);
@@ -359,12 +295,10 @@ public class DogController : MonoBehaviour
             if (GameManager.Instance.IsLevelComplete())
             {
                 _audioSource.PlayOneShot(successSound);
-                Debug.Log("Level Complete!");
                 LevelComplete = true;
             }
             else
             {
-                Debug.Log("Too Soon!");
                 TooSoon = true;
             }
             
