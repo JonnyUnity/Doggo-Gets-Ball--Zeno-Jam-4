@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
-//using UnityEngine.UI;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -24,7 +24,6 @@ public class GameManager : MonoBehaviour
     private GameObject PauseMenu;
     private GameObject MessageCanvas;
 
-    // Audio
     private AudioSource AudioSource;
 
     private void Awake()
@@ -121,10 +120,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
     public void StartGame()
     {
         SceneManager.LoadScene(1);
     }
+
 
     public void QuitGame()
     {
@@ -136,19 +137,12 @@ public class GameManager : MonoBehaviour
         Application.Quit();
     }
 
+
     public void QuitToMenu()
     {
         SceneManager.LoadScene(0);
     }
 
-    //private void LoadTilesRemaining(Scene scene, LoadSceneMode mode)
-    //{
-    //    if (LevelTiles.TryGetValue(scene.name, out int tilesRemaining))
-    //    {
-    //        TilesRemaining = LevelTiles[scene.name];
-    //        Debug.Log("Loaded Tiles remaining count: " + TilesRemaining);
-    //    }        
-    //}
 
     private void LoadLevel(Scene scene, LoadSceneMode mode)
     {
@@ -162,34 +156,11 @@ public class GameManager : MonoBehaviour
             // Update Camera
             cam.orthographicSize = CurrentLevel.CameraSize;
 
-            var grid = GameObject.Find("Grid");
-
-            //var wallsTileMap = grid.transform.Find("Walls").gameObject;
             var wallsTileMap = GameObject.Find("Walls").gameObject;
-
-            float cameraX, cameraY;
-            var localBounds = wallsTileMap.GetComponent<TilemapRenderer>().bounds;
-            cameraX = localBounds.min.x + (localBounds.max.x - localBounds.min.x) / 2;
-            cameraY = localBounds.min.y + (localBounds.max.y - localBounds.min.y) / 2;
-
-            cam.transform.position = new Vector3(cameraX, cameraY, -1f);
-
-
-
-            //foreach (var tm in tilemaps)
-            //{
-            //    if (tm.CompareTag("Wall"))
-            //    {
-            //        var localBounds = tm.GetComponent<TilemapRenderer>().bounds;
-            //        cameraX = localBounds.min.x + (localBounds.max.x - localBounds.min.x) / 2;
-            //        cameraY = localBounds.min.y + (localBounds.max.y - localBounds.min.y) / 2;
-
-            //        cam.transform.position = new Vector3(cameraX, cameraY, -1f);
-            //    }
-            //}
+            var localBounds = wallsTileMap.GetComponent<TilemapCollider2D>().bounds;
+            cam.transform.position = new Vector3(localBounds.center.x, localBounds.center.y, -1);
 
             GetFirstTryFlag();
-            //FirstTry = 1;
             EnableDisablePlayer(false);
 
             if (!AudioSource.isPlaying)
@@ -223,7 +194,6 @@ public class GameManager : MonoBehaviour
         if (playerVar != null)
         {
             Debug.Log(" Player = " + enabled);
-            //playerVar.ToggleActive(enabled);
             playerVar.enabled = enabled;
         }
 
@@ -247,10 +217,9 @@ public class GameManager : MonoBehaviour
     }
 
 
-    // Level is only complete if the star is collected as the last square.
+    // Level is only complete if the ball is collected as the last square.
     public bool IsLevelComplete()
     {
-        //return (TilesRemaining == 0);
         return (TilesRemaining == 1);   // last tile to cover!
     }
 
@@ -297,8 +266,6 @@ public class GameManager : MonoBehaviour
 
         yield return StartCoroutine(ShowMessages(CurrentLevel.StartLevelMessages, CurrentLevel.StartLevelWait));
 
-        
-        //yield return new WaitForSeconds(1);
     }
 
     private IEnumerator LevelPlaying()
@@ -324,7 +291,6 @@ public class GameManager : MonoBehaviour
 
         yield return StartCoroutine(ShowMessages(CurrentLevel.EndLevelMessages, CurrentLevel.EndLevelWait));
 
-        //yield return new WaitForSeconds(1);
         LoadNextLevel();
     }
 
@@ -351,17 +317,8 @@ public class GameManager : MonoBehaviour
         
         var background = MessageCanvas.transform.Find("Background").gameObject;
         background.SetActive(true);
-        //var textBackground = background.transform.GetChild(0);
-        //var messageTextGO = textBackground.GetChild(0);
-        //var messageText = messageTextGO.GetComponent<TextMeshProUGUI>();
-        //var messageText = background.GetComponentInChildren<TMP_Text>();
-        //var messageText = GetMessageText();
+        
         var messageText = GameObject.FindGameObjectsWithTag("MessageText")[0].GetComponent<TextMeshProUGUI>();
-
-        //GetMessageText();
-        //var textBackground = MessageCanvas.transform.Find("TextBackground").gameObject;
-        //textBackground.SetActive(true);
-
         foreach (var msg in messages)
         {
             messageText.text = msg;
@@ -369,8 +326,8 @@ public class GameManager : MonoBehaviour
         }
         messageText.text = "";
         background.SetActive(false);
-        //textBackground.SetActive(false);
     }
+
 
     private void GetMainCanvas()
     {
@@ -381,25 +338,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void GetMessageText()
-    {
-        var obj = GameObject.FindGameObjectsWithTag("MessageText").GetValue(0);
-    }
-
-    //private GameObject GetMainCanvas()
-    //{
-    //    var canvas = GameObject.FindGameObjectWithTag("MainCanvas");
-    //    if (canvas != null)
-    //    {
-    //        var trans = canvas.transform.Find("Messages");
-    //        if (trans != null)
-    //        {
-    //            return trans.gameObject;
-    //        }
-    //    }
-
-    //    return null;
-    //}
 
     public void SetFailState(string message)
     {
@@ -409,22 +347,24 @@ public class GameManager : MonoBehaviour
         State = GameState.Dead;
     }
 
+
     public void HitWall()
     {
-        // randomise message?
         SetFailState(CurrentLevel.FailMessage_Dead);
     }
 
+
     public void HitOwnBody()
     {
-        // randomise message?
         SetFailState(CurrentLevel.FailMessage_Dead);
     }
+
 
     public void CollectedBallEarly()
     {
         SetFailState(CurrentLevel.FailMessage_TooSoon);
     }
+
 
     public void CompleteLevel()
     {
@@ -442,11 +382,4 @@ public enum GameState
     Paused,
     Dead,
     LevelEnding
-}
-
-public enum PlayerState
-{
-    Alive,
-    HitWall,
-    HitOwnBody
 }

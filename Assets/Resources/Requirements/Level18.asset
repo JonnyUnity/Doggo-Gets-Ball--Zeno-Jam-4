@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f47e21d9292e5343a07ad6719c502f2, type: 3}
   m_Name: Level18
   m_EditorClassIdentifier: 
-  CameraSize: 5
+  CameraSize: 4
   TilesRemaining: 47
   StartLevelMessages:
   - I'm sleepy
