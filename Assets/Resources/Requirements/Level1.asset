@@ -18,7 +18,7 @@ MonoBehaviour:
   - Use WSAD to move
   - Press R to Restart
   - Now go get that ball!
-  StartLevelWait: 5
+  StartLevelWait: 2
   EndLevelMessages:
   - Got the ball!
   EndLevelWait: 5
