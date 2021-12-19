@@ -1,5 +1,6 @@
 Art:
-Ground and wall sprites from Kenney.nl (and modified).
+Ground, wall and ball sprites from Kenney.nl (modified).
+Space and Planets from Unity Asset Store (modified).
 
 SFX:
 Kenney.nl impact sounds.
