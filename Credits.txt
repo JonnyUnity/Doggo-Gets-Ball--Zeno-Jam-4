@@ -1,0 +1,10 @@
+Art:
+Ground and wall sprites from Kenney.nl (and modified).
+
+SFX:
+Kenney.nl impact sounds.
+Fanfare music from Videvo.net
+Audience applause from SoundBible.com.
+
+Music:
+Infinite Happiness from Unity Asset Store

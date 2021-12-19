@@ -19,7 +19,7 @@ MonoBehaviour:
   StartLevelWait: 3
   EndLevelMessages:
   - Woof! I did it!
-  EndLevelWait: 3
+  EndLevelWait: 4
   FailMessage_TooSoon: I think I should run about a bit first...
   FailMessage_Dead: Ouch!
   FailMessages:

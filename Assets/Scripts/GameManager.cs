@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 //using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -15,6 +16,7 @@ public class GameManager : MonoBehaviour
     public Dictionary<string, LevelRequirements> LevelRequirements;
     public LevelRequirements CurrentLevel;
 
+    [HideInInspector]
     public int TilesRemaining;
     private string FailMessage;
     private int FirstTry = 1;
@@ -22,7 +24,8 @@ public class GameManager : MonoBehaviour
     private GameObject PauseMenu;
     private GameObject MessageCanvas;
 
-   // private Snake player;
+    // Audio
+    private AudioSource AudioSource;
 
     private void Awake()
     {
@@ -34,8 +37,9 @@ public class GameManager : MonoBehaviour
 
         State = GameState.MainMenu;
         Instance = this;
+        AudioSource = GetComponent<AudioSource>();
         InitLevelRequirements();
-        //SceneManager.sceneLoaded += LoadTilesRemaining;
+
         SceneManager.sceneLoaded += LoadLevel;
 
         DontDestroyOnLoad(gameObject);
@@ -55,6 +59,8 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    #region Pause Menu
 
     public void PauseGame()
     {
@@ -94,6 +100,8 @@ public class GameManager : MonoBehaviour
         return pauseMenu;
     }
 
+#endregion
+
     private void InitLevelRequirements()
     {
         LevelRequirements = new Dictionary<string, LevelRequirements>();
@@ -113,11 +121,12 @@ public class GameManager : MonoBehaviour
 
     public void QuitGame()
     {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-    Application.Quit;
-#endif
+//#if UNITY_EDITOR
+//        UnityEditor.EditorApplication.isPlaying = false;
+//#else
+//    Application.Quit();
+//#endif
+        Application.Quit();
     }
 
     public void QuitToMenu()
@@ -176,11 +185,22 @@ public class GameManager : MonoBehaviour
             //FirstTry = 1;
             EnableDisablePlayer(false);
 
+            if (!AudioSource.isPlaying)
+            {
+                AudioSource.Play();
+            }
 
             StartCoroutine(GameLoop());
 
         }
-
+        else
+        {
+            if (AudioSource.isPlaying)
+            {
+                AudioSource.Stop();
+            }
+        }
+        
 
     }
 
@@ -321,8 +341,19 @@ public class GameManager : MonoBehaviour
         }
 
         MessageCanvas.SetActive(true);  // in case it's inactive
-        var messageText = MessageCanvas.GetComponentInChildren<TextMeshProUGUI>();
-        //var background = MessageCanvas.GetComponentInChildren<Image>();
+        
+        var background = MessageCanvas.transform.Find("Background").gameObject;
+        background.SetActive(true);
+        //var textBackground = background.transform.GetChild(0);
+        //var messageTextGO = textBackground.GetChild(0);
+        //var messageText = messageTextGO.GetComponent<TextMeshProUGUI>();
+        //var messageText = background.GetComponentInChildren<TMP_Text>();
+        //var messageText = GetMessageText();
+        var messageText = GameObject.FindGameObjectsWithTag("MessageText")[0].GetComponent<TextMeshProUGUI>();
+
+        //GetMessageText();
+        //var textBackground = MessageCanvas.transform.Find("TextBackground").gameObject;
+        //textBackground.SetActive(true);
 
         foreach (var msg in messages)
         {
@@ -330,21 +361,8 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(messagePause);
         }
         messageText.text = "";
-
-        //var messageCanvas = GetMainCanvas();
-        //if (messageCanvas != null)
-        //{
-        //    messageCanvas.SetActive(true);  // in case it's inactive
-        //    var messageText = messageCanvas.GetComponentInChildren<TextMeshProUGUI>();
-
-        //    foreach (var msg in messages)
-        //    {
-        //        messageText.text = msg;
-        //        yield return new WaitForSeconds(messagePause);
-        //    }
-        //    messageText.text = "";
-
-        //}
+        background.SetActive(false);
+        //textBackground.SetActive(false);
     }
 
     private void GetMainCanvas()
@@ -356,6 +374,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void GetMessageText()
+    {
+        var obj = GameObject.FindGameObjectsWithTag("MessageText").GetValue(0);
+    }
 
     //private GameObject GetMainCanvas()
     //{

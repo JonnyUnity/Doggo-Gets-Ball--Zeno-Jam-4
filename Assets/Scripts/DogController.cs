@@ -42,11 +42,23 @@ public class DogController : MonoBehaviour
 
     private GameObject Dog_Neck;
 
+    // Audio
+    private AudioSource _audioSource;
+
+    [SerializeField]
+    private AudioClip walkSound;
+    [SerializeField]
+    private AudioClip BonkSound;
+    [SerializeField]
+    private AudioClip successSound;
+    [SerializeField]
+    private AudioClip[] footstepSounds;
 
     private void Awake()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _audioSource = GetComponent<AudioSource>();
         Dog_Neck = gameObject.transform.Find("Neck").gameObject;
     }
 
@@ -198,7 +210,8 @@ public class DogController : MonoBehaviour
         //    }
         //}
 
-        //targetPos = new Vector2(transform.position.x + _direction.x, transform.position.y + _direction.y);
+        
+
         if (Vector2.Distance(transform.position, targetPos) > 0.001f)
         {
             _rigidBody.velocity = new Vector2(_direction.x * speed, _direction.y * speed);
@@ -206,6 +219,7 @@ public class DogController : MonoBehaviour
         }
         else
         {
+            PlayFootstepSound();
             _rigidBody.velocity = Vector2.zero;
             Dog_Neck.SetActive(false);
             GameManager.Instance.TilesRemaining--;
@@ -237,6 +251,13 @@ public class DogController : MonoBehaviour
         //doMove = false;
         //isMoving = false;
         //yield return 0;
+
+    }
+
+    private void PlayFootstepSound()
+    {
+        int selected = Random.Range(0, footstepSounds.Length - 1);
+        _audioSource.PlayOneShot(footstepSounds[selected]);
 
     }
 
@@ -327,21 +348,7 @@ public class DogController : MonoBehaviour
                         segment.Rotate(0, 0, 180);
                         // orig
                     }
-                }
-
-                //if (_direction == Vector2.right && _previousDirection == Vector2.down)
-                //{
-                //    //segment.localScale = new Vector3(-1, 1, 1);
-                //}
-                //if (_direction == Vector2.up && _previousDirection == Vector2.left)
-                //{
-                //    segment.Rotate(0, 0, 270);
-                //}
-                //else if (_direction == Vector2.right && _previousDirection == Vector2.up)
-                //{
-                //    segment.localScale = new Vector3(-1, -1, 1);
-                //}
-                
+                }               
             }
             else
             {
@@ -361,19 +368,23 @@ public class DogController : MonoBehaviour
         if (other.CompareTag("Body"))
         {
             _rigidBody.velocity = Vector2.zero;
+            _audioSource.PlayOneShot(BonkSound);
             GameManager.Instance.SetFailState("Oof! Hit my own body!");
         }
 
         if (other.CompareTag("Wall"))
         {
             _rigidBody.velocity = Vector2.zero;
+            _audioSource.PlayOneShot(BonkSound);
             GameManager.Instance.SetFailState("Dang! Hit a wall!");
         }
 
         if (other.CompareTag("Finish"))
         {
+            Destroy(other.gameObject);
             if (GameManager.Instance.IsLevelComplete())
             {
+                _audioSource.PlayOneShot(successSound);
                 Debug.Log("Level Complete!");
                 LevelComplete = true;
             }

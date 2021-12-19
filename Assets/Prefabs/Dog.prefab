@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1485323503171270740}
   - component: {fileID: 1485323503171270741}
   - component: {fileID: 435342544615257544}
+  - component: {fileID: 5217891738544988648}
   m_Layer: 0
   m_Name: Dog
   m_TagString: Player
@@ -76,7 +77,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -210036323
   m_SortingLayer: 1
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: aa7cf8a131675864b9b2771160cdbc7a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -157,6 +158,111 @@ MonoBehaviour:
   BackLegs_Side: {fileID: 21300000, guid: 5ead77b17d46cbe4c802026edbc8b05e, type: 3}
   Backlegs_Up: {fileID: 21300000, guid: f0b011fb9a226404f8fccb77bdc666e4, type: 3}
   BackLegs_Down: {fileID: 21300000, guid: fc201b20173fdd24194e76fa3a32c131, type: 3}
+  walkSound: {fileID: 0}
+  BonkSound: {fileID: 8300000, guid: 6bde8ec0d16fe3e48be6626c379177ce, type: 3}
+  successSound: {fileID: 8300000, guid: b50d50476004bf241b881e96e0f9a316, type: 3}
+  footstepSounds:
+  - {fileID: 8300000, guid: 5a94b917728f18d4db4d7a3c10f376d3, type: 3}
+  - {fileID: 8300000, guid: 0f68add8bba102b47954fd5d14241e10, type: 3}
+  - {fileID: 8300000, guid: ed55e3f2c3868314bb06422aa9aedd14, type: 3}
+  - {fileID: 8300000, guid: 446fa231875cf3d45b61b5e45f028538, type: 3}
+  - {fileID: 8300000, guid: 8c4a1a649b5b2ea4db4c9472c72717df, type: 3}
+--- !u!82 &5217891738544988648
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1485323503171270730}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &9202471978359533466
 GameObject:
   m_ObjectHideFlags: 0
