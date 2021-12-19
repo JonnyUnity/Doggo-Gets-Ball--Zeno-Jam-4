@@ -120,15 +120,6 @@ public class DogController : MonoBehaviour
                 }
 
 
-                if (Input.GetKeyDown(KeyCode.R))
-                {
-                    GameManager.Instance.RestartLevel();
-                }
-
-                //if (TooSoon)
-                //{
-                //    GameManager.Instance.SetFailState("Too soon!", true, false);
-                //}
                 if (LevelComplete)
                 {
                     GameManager.Instance.CompleteLevel();
@@ -137,23 +128,6 @@ public class DogController : MonoBehaviour
                 {
                     GameManager.Instance.CollectedBallEarly();
                 }
-
-                //// Check for level complete?
-                //if (GameManager.Instance.IsLevelComplete())
-                //{
-
-
-                //    Debug.Log("Level Complete!");
-                //    //LevelComplete = true;
-
-                //}
-                //else
-                //{
-                //    Debug.Log("Too Soon!");
-                //    //TooSoon = true;
-
-                //}
-
             }
         }
     }

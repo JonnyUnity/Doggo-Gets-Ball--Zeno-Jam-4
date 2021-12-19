@@ -58,6 +58,13 @@ public class GameManager : MonoBehaviour
                 ResumeGame();
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.R) && State == GameState.InPlay)
+        {
+            FirstTry = 0;
+            SetFirstTryFlag();
+            GameManager.Instance.RestartLevel();
+        }
     }
 
     #region Pause Menu
