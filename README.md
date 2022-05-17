@@ -3,7 +3,6 @@
 **My submission for [ZenoJam 4: I Am Everywhere](https://itch.io/jam/zenojam-the-perfect-jam-for-beginners-4).**
 ## Doggo Gets Ball
 
-**
 Good doggo just wants his ball and will not stop 'til he gets it.  
 Playable here: https://jflex.itch.io/doggo-gets-ball
 
@@ -13,14 +12,14 @@ Playable here: https://jflex.itch.io/doggo-gets-ball
 Written in C#/Unity.
 
 
-**Art:**
+**Art:**  
 Ground, wall and ball sprites from Kenney.nl (modified).
 Space and Planets from Unity Asset Store (modified).
 
-**SFX:**
+**SFX:**  
 Kenney.nl impact sounds.
 Fanfare music from Videvo.net
 Audience applause from SoundBible.com.
 
-**Music:**
+**Music:**  
 Infinite Happiness from Unity Asset Store
