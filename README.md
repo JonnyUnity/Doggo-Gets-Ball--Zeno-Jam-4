@@ -4,7 +4,7 @@
 ## Doggo Gets Ball
 
 **
-Good doggo just wants his ball and will not stop 'til he gets it.
+Good doggo just wants his ball and will not stop 'til he gets it.  
 Playable here: https://jflex.itch.io/doggo-gets-ball
 
 
