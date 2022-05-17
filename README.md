@@ -1,15 +1,16 @@
-# ZenoJam4
+# Doggo Gets Ball
 
-**My submission for [ZenoJam 4: I Am Everywhere](https://itch.io/jam/zenojam-the-perfect-jam-for-beginners-4).**
-## Doggo Gets Ball
+**My game jam submission for [ZenoJam 4: I Am Everywhere](https://itch.io/jam/zenojam-the-perfect-jam-for-beginners-4).**
+
 
 Good doggo just wants his ball and will not stop 'til he gets it.  
+Written in C#/Unity.  
 Playable here: https://jflex.itch.io/doggo-gets-ball
 
 
 ![Screenshot1](https://user-images.githubusercontent.com/95136177/168894186-d33e06ac-a0fd-449f-94b8-1ce0c5dfb2a3.png)
 
-Written in C#/Unity.
+
 
 
 **Art:**  
